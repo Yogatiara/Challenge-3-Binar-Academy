@@ -1,6 +1,8 @@
 const fs = require('fs');
+const dataDirectory = `${__dirname}/../../dev-data/data/cars-data.json`;
 
-const carsData = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/cars-data.json`));
+
+const carsData = JSON.parse(fs.readFileSync(dataDirectory));
 
 const { v4: uuidv4 } = require('uuid');
 const uuid = uuidv4();
@@ -28,20 +30,14 @@ module.exports = {
 
     const carData = carsData.find(el => el.id === id);
 
-    if (!carData) {
-      return res.status(404).json({
-        status: 'failed',
-        message: `data with ${id} this not found`
-      })
-    } else {
-      res.status(200).json({
-        status: "succes",
-        message: `car data with ${id} is successfully displayed`,
-        data: {
-          carData
-        }
-      })
-    }
+
+    res.status(200).json({
+      status: "succes",
+      message: `car data with ${id} is successfully displayed`,
+      data: {
+        carData
+      }
+    })
 
   },
 
@@ -51,7 +47,7 @@ module.exports = {
 
     carsData.push(newData);
 
-    fs.writeFile(`${__dirname}/../dev-data/data/cars-data.json`, JSON.stringify(carsData), err => {
+    fs.writeFile(dataDirectory, JSON.stringify(carsData), err => {
       if (err) {
         return res.status(500).json({
           status: "failed",
@@ -74,16 +70,9 @@ module.exports = {
 
     const carIndex = carsData.findIndex(el => el.id === id);
 
-    if (carIndex === -1) {
-      return res.status(404).json({
-        status: "failed",
-        message: `car data with ${id} this not found`
-      })
-    }
-
     carsData[carIndex] = { ...carsData[carIndex], ...req.body }
 
-    fs.writeFile(`${__dirname}/../dev-data/data/cars-data.json`, JSON.stringify(carsData), err => {
+    fs.writeFile(dataDirectory, JSON.stringify(carsData), err => {
       if (err) {
         return res.status(500).json({
           status: "failed",
@@ -106,16 +95,9 @@ module.exports = {
 
     const carIndex = carsData.findIndex(el => el.id === id);
 
-    if (carIndex === -1) {
-      return res.status(404).json({
-        status: "failed",
-        message: `car data with ${id} this not found`
-      })
-    }
-
     carsData.splice(carIndex, 1);
 
-    fs.writeFile(`${__dirname}/../dev-data/data/cars-data.json`, JSON.stringify(carsData), err => {
+    fs.writeFile(dataDirectory, JSON.stringify(carsData), err => {
       if (err) {
         return res.status(500).json({
           status: "failed",
@@ -129,10 +111,5 @@ module.exports = {
         })
       }
     })
-
-
-
-
-
   }
 }
